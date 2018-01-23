@@ -10,7 +10,7 @@ const evaluationSchema = new Schema({
 
 const studentSchema = new Schema({
   name: { type: String, required: true },
-  photo: { type: String, default: 'http://via.placeholder.com/500x180?text=No%20Image' },
+  photo: { type: String, required: true },
   evaluations: [evaluationSchema],
 })
 
