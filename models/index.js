@@ -1,8 +1,8 @@
 // models/index.js
-const Game = require('./game')
+const Class = require('./class')
 const User = require('./user')
 
 module.exports = {
-  Game,
+  Class,
   User
 }
