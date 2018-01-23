@@ -3,7 +3,7 @@ const { Schema } = mongoose
 
 const evaluationSchema = new Schema({
   evaluation: ['red', 'yellow', 'green'],
-  date: { type: Date, required: true, default: Date.now }
+  date: { type: Date, required: true, default: Date.now },
   remarks: { type: String, required: false },
   userId: { type: Schema.Types.ObjectId, ref: 'users' },
 })
