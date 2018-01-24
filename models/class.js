@@ -24,4 +24,7 @@ const classSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
 })
 
-module.exports = mongoose.model('classes', classSchema)
+module.exports = {
+    students: mongoose.model('students', studentSchema),
+    classes: mongoose.model('classes', classSchema)
+};
