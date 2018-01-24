@@ -29,15 +29,17 @@ router.post('/class/:id/students', authenticate, (req, res, next) => {
   .delete('/class/:classId/student/:studentId', (req, res, next) => {
     const studentId = req.params.studentId
     const classId = req.params.classId
-    Class.findByIdAndUpdate(classId, {
-      $pull: {
-        students: {_id: studentId}
-      }
+
+    Class.findOne({'students._id': studentId}, function(err, aClass) {
+      var doc = aClass.students.id(studentId).remove();
+      aClass.save((err, data) => {
+          if(!err) {
+            res.json(data)
+          } else {
+            next(err)
+          }
+      });
     })
-    .then((aClass) => {
-      res.json(aClass)
-    })
-    .catch((error) => next(error))
   })
 
 
