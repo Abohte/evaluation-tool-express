@@ -9,7 +9,8 @@ const evaluationSchema = new Schema({
 })
 
 const studentSchema = new Schema({
-  name: { type: String, required: true },
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
   photo: { type: String, required: true },
   evaluations: [evaluationSchema],
 })

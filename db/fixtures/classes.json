@@ -1,0 +1,113 @@
+[
+  {
+    "students": [
+      {
+        "firstName": "James",
+        "lastName": "Harris",
+        "photo": "https://pbs.twimg.com/profile_images/807246356502999040/Br0otDLs_400x400.jpg",
+        "evaluations": [
+          {
+            "evaluation": "yellow",
+            "date": "2017-10-8"
+          },
+          {
+            "evaluation": "red",
+            "date": "2017-10-10"
+          },
+          {
+            "evaluation": "green",
+            "date": "2017-10-11"
+          }
+        ]
+      },
+      {
+        "firstName": "Anna",
+        "lastName": "Jones",
+        "photo": "https://lh6.googleusercontent.com/-PjEHw5XjPoM/AAAAAAAAAAI/AAAAAAAAAAA/bIUp9X0rFik/photo.jpg",
+        "evaluations": [
+          {
+            "evaluation": "green",
+            "date": "2017-10-8"
+          },
+          {
+            "evaluation": "green",
+            "date": "2017-10-10"
+          },
+          {
+            "evaluation": "yellow",
+            "date": "2017-10-11"
+          }
+        ]
+      }
+    ],
+    "batchNumber": 2,
+    "startsAt": "2017-10-4",
+    "endsAt": "2017-12-4"
+  },
+  {
+    "students": [
+      {
+        "firstName": "Tom",
+        "lastName": "Laurie",
+        "photo": "https://philipchannells.files.wordpress.com/2016/12/tom-hogan-headshot-1.jpg?w=470",
+        "evaluations": [
+          {
+            "evaluation": "red",
+            "date": "2017-11-8",
+            "remarks": "Must do better"
+          },
+          {
+            "evaluation": "yellow",
+            "date": "2017-11-12"
+          },
+          {
+            "evaluation": "green",
+            "date": "2017-12-11"
+          }
+        ]
+      },
+      {
+        "firstName": "Mary",
+        "lastName": "White",
+        "photo": "https://www.royalpurpleyearbook.com/wp-content/uploads/2016/10/staffphotos-1.jpg",
+        "evaluations": [
+          {
+            "evaluation": "green",
+            "date": "2017-11-8"
+          },
+          {
+            "evaluation": "yellow",
+            "date": "2017-11-12"
+          },
+          {
+            "evaluation": "green",
+            "date": "2017-12-11"
+          }
+        ]
+      },
+      {
+        "firstName": "Tina",
+        "lastName": "Elliot",
+        "photo": "http://connectedinvestors.com/uploads/user/245564/img_57acad31d4d9b.jpg",
+        "evaluations": [
+          {
+            "evaluation": "green",
+            "date": "2017-11-8"
+          },
+          {
+            "evaluation": "green",
+            "date": "2017-11-12"
+          },
+          {
+            "evaluation": "yellow",
+            "date": "2017-12-11",
+            "remarks": "Forgot stuff"
+          }
+        ]
+      }
+    ],
+    "batchNumber": 3,
+    "startsAt": "2017-11-4",
+    "endsAt": "2018-01-4"
+  }
+]
