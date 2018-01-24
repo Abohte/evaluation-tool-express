@@ -13,7 +13,7 @@ const createClasses = (token) => {
       .set('Authorization', `Bearer ${token}`)
       .send(aClass)
       .then((res) => {
-        console.log('Class seeded...', res.body.title)
+        console.log('Class seeded...', res.body.batchNumber)
       })
       .catch((err) => {
         console.error('Error seeding class!', err)
@@ -25,10 +25,10 @@ const authenticate = (email, password) => {
   request
     .post(createUrl('/sessions'))
     .send({ email, password })
-    // .then((res) => {
-    //   console.log('Authenticated!')
-    //   return createClasses(res.body.token)
-    // })
+    .then((res) => {
+      console.log('Authenticated!')
+      return createClasses(res.body.token)
+    })
     .catch((err) => {
       console.error('Failed to authenticate!', err.message)
     })

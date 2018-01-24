@@ -2,7 +2,7 @@ const mongoose = require('../config/database')
 const { Schema } = mongoose
 
 const evaluationSchema = new Schema({
-  evaluation: ['red', 'yellow', 'green'],
+  evaluation: { type: String, enum: ['red', 'yellow', 'green'], required: true},
   date: { type: Date, required: true, default: Date.now },
   remarks: { type: String, required: false },
   userId: { type: Schema.Types.ObjectId, ref: 'users' },

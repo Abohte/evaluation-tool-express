@@ -15,10 +15,11 @@ app
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
   .use(passport.initialize())
+  .use(sessions)
   .use(users)
   .use(classes)
   .use(students)
-  .use(sessions)
+
 
   // catch 404 and forward to error handler
   .use((req, res, next) => {
