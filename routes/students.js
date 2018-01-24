@@ -20,25 +20,39 @@ router.post('/class/:id/students', authenticate, (req, res, next) => {
                 } else {
                   next(err)
                 }
-            });
+            })
           })
           .catch((error) => next(error))
       })
 
   })
-  .delete('/class/:classId/student/:studentId', (req, res, next) => {
-    const studentId = req.params.studentId
-    const classId = req.params.classId
+  .put('/student/:id', authenticate, (req, res, next) => {
+    const id = req.params.id
+    let updatedStudent = req.body
 
-    Class.findOne({'students._id': studentId}, function(err, aClass) {
-      var doc = aClass.students.id(studentId).remove();
+    Class.findOne({'students._id': id}, function(err, aClass) {
+      aClass.students.id(id).set(updatedStudent);
       aClass.save((err, data) => {
           if(!err) {
             res.json(data)
           } else {
             next(err)
           }
-      });
+      })
+    })
+  })
+  .delete('/student/:id', authenticate, (req, res, next) => {
+    const id = req.params.id
+
+    Class.findOne({'students._id': id}, function(err, aClass) {
+      aClass.students.id(id).remove();
+      aClass.save((err, data) => {
+          if(!err) {
+            res.json(data)
+          } else {
+            next(err)
+          }
+      })
     })
   })
 
