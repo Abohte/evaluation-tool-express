@@ -25,6 +25,7 @@ const classSchema = new Schema({
 })
 
 module.exports = {
-    students: mongoose.model('students', studentSchema),
-    classes: mongoose.model('classes', classSchema)
-};
+  evaluations: mongoose.model('evaluations', evaluationSchema),
+  students: mongoose.model('students', studentSchema),
+  classes: mongoose.model('classes', classSchema)
+}
