@@ -1,0 +1,430 @@
+diff --git a/db/fixtures/classes.json b/db/fixtures/classes.json
+index 3ae69a7..9254bce 100644
+--- a/db/fixtures/classes.json
++++ b/db/fixtures/classes.json
+@@ -8,17 +8,17 @@
+         "evaluations": [
+           {
+             "evaluation": "yellow",
+-            "date": "2017-10-8",
++            "date": "2017-10-8"
+           },
+           {
+             "evaluation": "red",
+-            "date": "2017-10-10",
++            "date": "2017-10-10"
+           },
+           {
+             "evaluation": "green",
+-            "date": "2017-10-11",
+-          },
+-        ],
++            "date": "2017-10-11"
++          }
++        ]
+       },
+       {
+         "firstName": "Anna",
+@@ -27,22 +27,22 @@
+         "evaluations": [
+           {
+             "evaluation": "green",
+-            "date": "2017-10-8",
++            "date": "2017-10-8"
+           },
+           {
+             "evaluation": "green",
+-            "date": "2017-10-10",
++            "date": "2017-10-10"
+           },
+           {
+             "evaluation": "yellow",
+-            "date": "2017-10-11",
+-          },
+-        ],
+-      },
++            "date": "2017-10-11"
++          }
++        ]
++      }
+     ],
+     "batchNumber": 2,
+     "startsAt": "2017-10-4",
+-    "endsAt": "2017-12-4",
++    "endsAt": "2017-12-4"
+   },
+   {
+     "students": [
+@@ -58,13 +58,13 @@
+           },
+           {
+             "evaluation": "yellow",
+-            "date": "2017-11-12",
++            "date": "2017-11-12"
+           },
+           {
+             "evaluation": "green",
+-            "date": "2017-12-11",
+-          },
+-        ],
++            "date": "2017-12-11"
++          }
++        ]
+       },
+       {
+         "firstName": "Mary",
+@@ -73,17 +73,17 @@
+         "evaluations": [
+           {
+             "evaluation": "green",
+-            "date": "2017-11-8",
++            "date": "2017-11-8"
+           },
+           {
+             "evaluation": "yellow",
+-            "date": "2017-11-12",
++            "date": "2017-11-12"
+           },
+           {
+             "evaluation": "green",
+-            "date": "2017-12-11",
+-          },
+-        ],
++            "date": "2017-12-11"
++          }
++        ]
+       },
+       {
+         "firstName": "Tina",
+@@ -92,22 +92,22 @@
+         "evaluations": [
+           {
+             "evaluation": "green",
+-            "date": "2017-11-8",
++            "date": "2017-11-8"
+           },
+           {
+             "evaluation": "green",
+-            "date": "2017-11-12",
++            "date": "2017-11-12"
+           },
+           {
+             "evaluation": "yellow",
+             "date": "2017-12-11",
+-            "remarks": "Forgot stuff",
+-          },
+-        ],
+-      },
++            "remarks": "Forgot stuff"
++          }
++        ]
++      }
+     ],
+     "batchNumber": 3,
+     "startsAt": "2017-11-4",
+-    "endsAt": "2018-01-4",
++    "endsAt": "2018-01-4"
+   }
+ ]
+diff --git a/db/seed.js b/db/seed.js
+index 12ac759..b3b4bf7 100644
+--- a/db/seed.js
++++ b/db/seed.js
+@@ -1,6 +1,6 @@
+ const request = require('superagent')
+ const user = require('./fixtures/users.json')
+-const recipes = require('./fixtures/classes.json')
++const classes = require('./fixtures/classes.json')
+ 
+ const createUrl = (path) => {
+   return `${process.env.HOST || `http://localhost:${process.env.PORT || 3030}`}${path}`
+@@ -25,10 +25,10 @@ const authenticate = (email, password) => {
+   request
+     .post(createUrl('/sessions'))
+     .send({ email, password })
+-    .then((res) => {
+-      console.log('Authenticated!')
+-      return createClasses(res.body.token)
+-    })
++    // .then((res) => {
++    //   console.log('Authenticated!')
++    //   return createClasses(res.body.token)
++    // })
+     .catch((err) => {
+       console.error('Failed to authenticate!', err.message)
+     })
+@@ -46,4 +46,3 @@ request
+     console.log('Trying to continue...')
+     authenticate(user.email, user.password)
+   })
+-  
+diff --git a/index.js b/index.js
+index 99e49cf..04d042b 100755
+--- a/index.js
++++ b/index.js
+@@ -2,7 +2,7 @@ const express = require('express')
+ const cors = require('cors')
+ const bodyParser = require('body-parser')
+ const passport = require('./config/auth')
+-const { classes, users, sessions, students, } = require('./routes')
++const { classes, users, sessions, students } = require('./routes')
+ const http = require('http')
+ 
+ const port = process.env.PORT || 3030
+@@ -16,6 +16,8 @@ app
+   .use(bodyParser.json())
+   .use(passport.initialize())
+   .use(users)
++  .use(classes)
++  .use(students)
+   .use(sessions)
+ 
+   // catch 404 and forward to error handler
+diff --git a/models/class.js b/models/class.js
+index b17b75b..eb82d3d 100644
+--- a/models/class.js
++++ b/models/class.js
+@@ -9,7 +9,8 @@ const evaluationSchema = new Schema({
+ })
+ 
+ const studentSchema = new Schema({
+-  name: { type: String, required: true },
++  firstName: { type: String, required: true },
++  lastName: { type: String, required: true },
+   photo: { type: String, required: true },
+   evaluations: [evaluationSchema],
+ })
+diff --git a/package.json b/package.json
+index 01882f2..552c965 100755
+--- a/package.json
++++ b/package.json
+@@ -11,7 +11,8 @@
+   },
+   "scripts": {
+     "start": "node .",
+-    "dev": "nodemon --inspect ."
++    "dev": "nodemon --inspect .",
++    "seed": "node db/seed.js"
+   },
+   "dependencies": {
+     "body-parser": "^1.18.2",
+@@ -27,6 +28,7 @@
+     "socketio-jwt-auth": "^0.0.6"
+   },
+   "devDependencies": {
+-    "nodemon": "^1.12.1"
++    "nodemon": "^1.12.1",
++    "superagent": "^3.8.2"
+   }
+ }
+diff --git a/routes/classes.js b/routes/classes.js
+index 312ff87..62ab52d 100644
+--- a/routes/classes.js
++++ b/routes/classes.js
+@@ -5,48 +5,46 @@ const utils = require('../lib/utils')
+ 
+ const authenticate = passport.authorize('jwt', { session: false })
+ 
+-module.exports = io => {
+-  router
+-    .get('/classes', (req, res, next) => {
+-      Class.find()
+-        // Newest first
+-        .sort({ createdAt: -1 })
+-        // Send the data in JSON format
+-        .then((classes) => res.json(classes))
+-        // Throw a 500 error if something goes wrong
+-        .catch((error) => next(error))
+-    })
+-    .get('/class/:id', (req, res, next) => {
+-      const id = req.params.id
++router.
++  .get('/classes', (req, res, next) => {
++    Class.find()
++      // Newest first
++      .sort({ createdAt: -1 })
++      // Send the data in JSON format
++      .then((classes) => res.json(classes))
++      // Throw a 500 error if something goes wrong
++      .catch((error) => next(error))
++  })
++  .get('/class/:id', (req, res, next) => {
++    const id = req.params.id
+ 
+-      Class.findById(id)
+-        .then((aClass) => {
+-          if (!aClass) { return next() }
+-          res.json(aClass)
+-        })
+-        .catch((error) => next(error))
+-    })
+-    .post('/classes', authenticate, (req, res, next) => {
+-      const newClass = {
+-        // userId: req.account._id,
+-        // players: [{
+-        //   userId: req.account._id,
+-        //   pairs: []
+-        // }],
+-        // cards: utils.shuffle('✿✪♦✵♣♠♥✖'.repeat(2).split(''))
+-        //   .map((symbol) => ({ visible: false, symbol }))
+-      }
++    Class.findById(id)
++      .then((aClass) => {
++        if (!aClass) { return next() }
++        res.json(aClass)
++      })
++      .catch((error) => next(error))
++  })
++  .post('/classes', authenticate, (req, res, next) => {
++    const newClass = {
++      // userId: req.account._id,
++      // players: [{
++      //   userId: req.account._id,
++      //   pairs: []
++      // }],
++      // cards: utils.shuffle('✿✪♦✵♣♠♥✖'.repeat(2).split(''))
++      //   .map((symbol) => ({ visible: false, symbol }))
++    }
+ 
+-      Class.create(newClass)
+-        .then((aClass) => {
+-          io.emit('action', {
+-            type: 'CLASS_CREATED',
+-            payload: aClass
+-          })
+-          res.json(aClass)
++    Class.create(newClass)
++      .then((aClass) => {
++        io.emit('action', {
++          type: 'CLASS_CREATED',
++          payload: aClass
+         })
+-        .catch((error) => next(error))
+-    })
++        res.json(aClass)
++      })
++      .catch((error) => next(error))
++  })
+ 
+-  return router
+-}
++  module.exports = router
+diff --git a/yarn.lock b/yarn.lock
+index 50b7989..4e905ff 100755
+--- a/yarn.lock
++++ b/yarn.lock
+@@ -310,7 +310,7 @@ component-bind@1.0.0:
+   version "1.0.0"
+   resolved "https://registry.yarnpkg.com/component-bind/-/component-bind-1.0.0.tgz#00c608ab7dcd93897c0009651b1d3a8e1e73bbd1"
+ 
+-component-emitter@1.2.1:
++component-emitter@1.2.1, component-emitter@^1.2.0:
+   version "1.2.1"
+   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.2.1.tgz#137918d6d78283f7df7a6b7c5a63e140e69425e6"
+ 
+@@ -353,6 +353,10 @@ cookie@0.3.1:
+   version "0.3.1"
+   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
+ 
++cookiejar@^2.1.0:
++  version "2.1.1"
++  resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.1.tgz#41ad57b1b555951ec171412a81942b1e8200d34a"
++
+ core-util-is@1.0.2, core-util-is@~1.0.0:
+   version "1.0.2"
+   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
+@@ -591,7 +595,7 @@ express@^4.16.2:
+     utils-merge "1.0.1"
+     vary "~1.1.2"
+ 
+-extend@~3.0.0:
++extend@^3.0.0, extend@~3.0.0:
+   version "3.0.1"
+   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
+ 
+@@ -645,6 +649,14 @@ forever-agent@~0.6.1:
+   version "0.6.1"
+   resolved "https://registry.yarnpkg.com/forever-agent/-/forever-agent-0.6.1.tgz#fbc71f0c41adeb37f96c577ad1ed42d8fdacca91"
+ 
++form-data@^2.3.1:
++  version "2.3.1"
++  resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.3.1.tgz#6fb94fbd71885306d73d15cc497fe4cc4ecd44bf"
++  dependencies:
++    asynckit "^0.4.0"
++    combined-stream "^1.0.5"
++    mime-types "^2.1.12"
++
+ form-data@~2.1.1:
+   version "2.1.4"
+   resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.1.4.tgz#33c183acf193276ecaa98143a69e94bfee1750d1"
+@@ -653,6 +665,10 @@ form-data@~2.1.1:
+     combined-stream "^1.0.5"
+     mime-types "^2.1.12"
+ 
++formidable@^1.1.1:
++  version "1.1.1"
++  resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.1.1.tgz#96b8886f7c3c3508b932d6bd70c4d3a88f35f1a9"
++
+ forwarded@~0.1.2:
+   version "0.1.2"
+   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
+@@ -1234,7 +1250,7 @@ merge-descriptors@1.0.1:
+   version "1.0.1"
+   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
+ 
+-methods@~1.1.2:
++methods@^1.1.1, methods@~1.1.2:
+   version "1.1.2"
+   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
+ 
+@@ -1270,6 +1286,10 @@ mime@1.4.1:
+   version "1.4.1"
+   resolved "https://registry.yarnpkg.com/mime/-/mime-1.4.1.tgz#121f9ebc49e3766f311a76e1fa1c8003c4b03aa6"
+ 
++mime@^1.4.1:
++  version "1.6.0"
++  resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
++
+ minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.4:
+   version "3.0.4"
+   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
+@@ -1612,7 +1632,7 @@ punycode@^1.4.1:
+   version "1.4.1"
+   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
+ 
+-qs@6.5.1:
++qs@6.5.1, qs@^6.5.1:
+   version "6.5.1"
+   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
+ 
+@@ -1661,7 +1681,7 @@ readable-stream@2.2.7:
+     string_decoder "~1.0.0"
+     util-deprecate "~1.0.1"
+ 
+-readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stream@^2.1.4:
++readable-stream@^2.0.2, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.4:
+   version "2.3.3"
+   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.3.tgz#368f2512d79f9d46fdfc71349ae7878bbc1eb95c"
+   dependencies:
+@@ -1977,6 +1997,21 @@ strip-json-comments@~2.0.1:
+   version "2.0.1"
+   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
+ 
++superagent@^3.8.2:
++  version "3.8.2"
++  resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.8.2.tgz#e4a11b9d047f7d3efeb3bbe536d9ec0021d16403"
++  dependencies:
++    component-emitter "^1.2.0"
++    cookiejar "^2.1.0"
++    debug "^3.1.0"
++    extend "^3.0.0"
++    form-data "^2.3.1"
++    formidable "^1.1.1"
++    methods "^1.1.1"
++    mime "^1.4.1"
++    qs "^6.5.1"
++    readable-stream "^2.0.5"
++
+ supports-color@^4.0.0:
+   version "4.5.0"
+   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.5.0.tgz#be7a0de484dec5c5cddf8b3d59125044912f635b"

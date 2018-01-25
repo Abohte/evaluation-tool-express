@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const passport = require('./config/auth')
-const { classes, users, sessions, students, } = require('./routes')
+const { classes, users, sessions, students } = require('./routes')
 const http = require('http')
 
 const port = process.env.PORT || 3030
@@ -15,8 +15,11 @@ app
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
   .use(passport.initialize())
-  .use(users)
   .use(sessions)
+  .use(users)
+  .use(classes)
+  .use(students)
+
 
   // catch 404 and forward to error handler
   .use((req, res, next) => {
