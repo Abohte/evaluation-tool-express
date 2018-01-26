@@ -5,5 +5,6 @@ const User = require('./user')
 module.exports = {
   Class: Class.classes,
   Student: Class.students,
+  Evaluation: Class.evaluations,
   User
 }
